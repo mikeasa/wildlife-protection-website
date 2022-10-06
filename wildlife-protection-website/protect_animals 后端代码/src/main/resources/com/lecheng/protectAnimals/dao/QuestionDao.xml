@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.QuestionDao">
+    <select id="getQuestionByLimit" resultType="Question">
+        select questionid, question, optionA, optionB, optionC, optionD from protect_animal.questionbank order by rand() limit 7
+    </select>
+
+    <select id="getAnswer" parameterType="AnswerVo" resultType="Answer">
+        select questionid, answer from protect_animal.question_answer where
+        questionid in
+        <foreach collection="questionList" item="answer" open="(" close=")" separator=",">
+        #{answer.questionid}
+        </foreach>
+    </select>
+</mapper>

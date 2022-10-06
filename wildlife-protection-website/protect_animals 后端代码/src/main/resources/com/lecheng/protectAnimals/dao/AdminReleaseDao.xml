@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.AdminReleaseDao">
+    <select id="getAdminReleaseEntrance" resultType="AdminReleaseEntrance" >
+        select id,title, title_abstract, create_time, img_url from protect_animal.admin_release
+        order by create_time DESC
+    </select>
+    
+    
+    <select id="getAdminReleaseById" parameterType="int" resultType="AdminReleaseEntrance">
+        select context from protect_animal.admin_release where id=#{id}
+    </select>
+</mapper>

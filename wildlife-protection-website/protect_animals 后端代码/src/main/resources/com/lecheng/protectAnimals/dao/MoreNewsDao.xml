@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.MoreNewsDao">
+    <insert id="addMoreNews" parameterType="java.util.List">
+    insert into protect_animal.morenews(title,url,postTime,insertTime)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+        (
+        #{item.title},
+        #{item.url},
+        #{item.postTime},
+        #{item.insertTime}
+        )
+    </foreach>
+    </insert>
+    <select id="getParserResultByLimit" resultType="ParserResult">
+        select * from protect_animal.morenews order by postTime desc
+    </select>
+
+    <update id="truncateTable">
+        truncate table ${tableName}
+    </update>
+</mapper>

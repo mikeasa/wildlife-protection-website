@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.AnimalDao">
+    <insert id="addAnimal" parameterType="Animal">
+        insert into protect_animal.animal(name, img, introduce, species)
+        values (#{name},#{img},#{introduce},#{species})
+    </insert>
+
+    <select id="getAnimals" parameterType="java.util.List" resultType="Animal">
+        select id, name, img, introduce, species, tags, zoological_history, m_c, habit, life_habits, distribution_range
+         from protect_animal.animal where species in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        order by rand() limit 3
+    </select>
+
+    <select id="getFAKInterface" resultType="FAKInterface">
+        select context, type, imgurl from protect_animal.f_a_k_interface
+    </select>
+
+    <select id="getAnimal" resultType="Animal">
+        select id, name, img, introduce, species, tags, zoological_history, m_c, habit, life_habits, distribution_range from protect_animal.animal where name=#{name}
+    </select>
+
+    <select id="getAnimalsByTags" resultType="Animal">
+        select id, name, img, introduce, species, tags, zoological_history, m_c, habit, life_habits, distribution_range from protect_animal.animal
+        where tags=#{tags}
+    </select>
+</mapper>

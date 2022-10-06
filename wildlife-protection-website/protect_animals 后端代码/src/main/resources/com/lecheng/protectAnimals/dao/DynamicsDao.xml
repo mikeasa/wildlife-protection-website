@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.DynamicsDao">
+    <select id="getDynamicsByLikes" resultType="Dynamics">
+        select id, authorid, title, author, msg, create_time, likes,img_url from protect_animal.dynamics
+        order by likes DESC
+    </select>
+    <select id="getDynamicsByTime" resultType="Dynamics">
+        select id, authorid, title, author, msg, create_time, likes,img_url from protect_animal.dynamics
+        order by create_time DESC
+    </select>
+
+    <select id="getDynamicsFromConcern" resultType="Dynamics">
+        select id, authorid, title, author, msg, create_time, likes,img_url  from protect_animal.dynamics
+        where authorid in
+        <foreach collection="list" item="valueList" open="(" close=")" separator=",">
+            #{valueList}
+        </foreach>
+    </select>
+
+    <select id="getConcernedId" parameterType="int" resultType="int">
+        select user2id from protect_animal.user_user where user1id=#{id}
+    </select>
+
+    <select id="getDynamicById" parameterType="int" resultType="Dynamics">
+        select id, authorid, title, author,create_time,content from protect_animal.dynamics
+        where id=#{id}
+    </select>
+
+    <select id="getDynamicAuthorById" parameterType="int" resultType="String">
+        select head_img from protect_animal.user where userid=#{authorid}
+    </select>
+
+    <update id="likeDynamic" parameterType="int">
+        update protect_animal.dynamics set likes=likes+1 where id=#{id}
+    </update>
+
+    <insert id="FollowOtherUser" parameterType="FollowOtherUser">
+        insert into protect_animal.user_user(user1id, user2id) values (#{user1id},#{user2id})
+    </insert>
+
+    <insert id="atMe" parameterType="AtMe">
+        insert into protect_animal.atme(myid,otherid,atme) values(#{myid},#{otherid},#{atme})
+    </insert>
+
+    <insert id="addDynamic" parameterType="Dynamics">
+        insert into protect_animal.dynamics(authorid, title, author, msg, content, img_url) VALUES
+        (#{authorid},#{title},#{author},#{msg},#{content},#{img_url})
+    </insert>
+
+    <select id="getCommentByDynamicsId" resultType="Comment">
+        select id,userid,dynamicsid,username,discussion,head_img,create_time,likes from protect_animal.comment
+        where dynamicsid=#{dynamicsid} and commentid2=0
+    </select>
+
+    <select id="getCommentsByCommentId2" resultType="Comment">
+        select id,userid,dynamicsid,username,discussion,head_img,create_time,likes from protect_animal.comment
+        where  commentid2=#{commentid2}
+    </select>
+
+    <insert id="releaseComment" parameterType="Comment">
+        insert into protect_animal.comment(dynamicsid, userid, username, discussion,head_img)
+        values (#{dynamicsid},#{userid},#{username},#{discussion},#{head_img})
+    </insert>
+
+    <insert id="releaseChildrenComment" parameterType="Comment">
+        insert into protect_animal.comment(commentid2, dynamicsid, userid, username, discussion, head_img) VALUES
+        (#{commentid2},#{dynamicsid},#{userid},#{username},#{discussion},#{head_img})
+    </insert>
+
+    <update id="likeComment" parameterType="int">
+        update protect_animal.comment set likes=likes+1 where id=#{id}
+    </update>
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lecheng.protectAnimals.dao.VolunteerOrgDao">
+    <select id="getVolunteerOrg" resultType="VolunteerOrg">
+        select * from protect_animal.volunteerorganization
+    </select>
+
+    <select id="getVolunteerActivity" resultType="VolunteerActivityEntrance">
+        select id, vorg_id , start_time, end_time, number, current_number, score, statute, title, context, area from protect_animal.volunteer_activity_entrance where id=#{v_a_id}
+    </select>
+
+    <select id="getAllV_A_EEntrance" resultType="VolunteerActivityEntrance">
+        select protect_animal.volunteer_activity_entrance.theme,img_url,start_time,
+        end_time,number,score,theme,statute,vorg_id,id from protect_animal.volunteer_activity_entrance
+    </select>
+
+    <select id="getV_A_EEntrance" resultType="VolunteerActivityEntrance">
+        select id, vorg_id, theme, img_url, start_time, end_time, number, score, statute from protect_animal.volunteer_activity_entrance
+        where statute=#{statute}
+        order by start_time DESC
+    </select>
+
+    <insert id="joinVolunteerActivity" parameterType="int">
+        insert into protect_animal.volunteeractivity_user(vid, uid)
+        values (#{vid},#{uid})
+    </insert>
+
+    <select id="getCurrentNumber" resultType="CheckVolunteerNumber">
+        select protect_animal.volunteer_activity_entrance.number,protect_animal.volunteer_activity_entrance.current_number
+         from protect_animal.volunteer_activity_entrance
+        where protect_animal.volunteer_activity_entrance.id=#{id}
+    </select>
+
+    <select id="getMyActivityId" resultType="JoinVolunteerActivity">
+        select protect_animal.volunteeractivity_user.vid from protect_animal.volunteeractivity_user
+        where protect_animal.volunteeractivity_user.statute=#{statute} and uid=#{uid}
+    </select>
+
+    <select id="getVolunteerActivityById" resultType="VolunteerActivityEntrance">
+         select id, vorg_id, theme, img_url, start_time, end_time, number, score, statute from protect_animal.volunteer_activity_entrance
+         where id in 
+         <foreach collection="list" item="valueList" open="(" close=")" separator=",">
+         #{valueList.vid}
+         </foreach>
+    </select>
+
+    <update id="addMoneyById" parameterType="map">
+        update protect_animal.volunteer_activity_entrance set protect_animal.volunteer_activity_entrance.money=money+#{WIDtotal_amount}
+        where id=#{id}
+   </update>
+</mapper>

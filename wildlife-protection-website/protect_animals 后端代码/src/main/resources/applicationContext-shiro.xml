@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+        <!-- 声明凭证匹配器 -->
+    <bean id="credentialsMatcher" class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+        <property name="hashAlgorithmName" value="md5"></property>
+        <property name="hashIterations" value="2"></property>
+    </bean>
+        <!--自定义sessionManage-->
+    <bean id="sessionManager" class="com.lecheng.protectAnimals.sessionManager.ShiroSession"></bean>
+        <!-- 声明userRealm -->
+    <bean id="userRealm" class="com.lecheng.protectAnimals.realm.UserRealm">
+        <!-- 注入凭证匹配器 -->
+        <property name="credentialsMatcher" ref="credentialsMatcher"></property>
+    </bean>
+    <!-- 配置SecurityManager -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <!-- 注入realm -->
+        <property name="realm" ref="userRealm"></property>
+        <!--注入sessionManager-->
+        <property name="sessionManager" ref="sessionManager"></property>
+    </bean>
+    <!-- 配置shiro的过滤器  这里面的id必须和web.xml里面的配置一样 -->
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean" >
+
+        <!-- 注入安全管理器 -->
+        <property name="securityManager" ref="securityManager"></property>
+        <!-- 注入未登陆的跳转-->
+        <property name="loginUrl" value="/user/unlogin"></property>
+        <!-- 注入未授权的访问 -->
+        <property name="unauthorizedUrl" value="/user/unauthorized"></property>
+        <!-- 自定义filter配置 -->
+
+        <!-- 配置过滤器链 -->
+        <property name="filterChainDefinitions">
+            <value>
+                <!-- 根路径放行 -->
+                /=anon
+                <!-- 放行跳转到登陆页面的路径 -->
+                /login.jsp=anon
+                <!--/index.jsp=anno-->
+                <!-- 放行登陆的请求 -->
+                /util/**=anon
+                /user/**=anon
+                /login/**=anon
+                /file/**=anon
+                /weixin/**=anon
+                /weixinlogin.jsp=anon
+                /statics/**=anon
+                /adminReleaseEntrance/**=anon
+                /lawQuestion/**=anon
+                /v_a_eEntrance/**=anon
+                <!-- 设置登出的路径 -->
+                /logout=logout
+                <!--设置访问权限-->
+                /register.jsp=roles["管理员"]
+                /admin/**=roles["管理员"]
+                <!-- 设置其它路径全部拦截 -->
+                <!--/**=authc-->
+            </value>
+        </property>
+    </bean>
+</beans>
